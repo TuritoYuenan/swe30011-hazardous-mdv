@@ -43,17 +43,17 @@ void setup() {
 
 void loop() {
   delay(100);
-}
-
-void routine() {
-  readSensors();
-  sendReadings();
 
   if (Serial.available() > 0) {
     int value = Serial.read();
     if (value == '2') engageResponseSystem();
     else if (value == '0') disengageResponseSystem();
   }
+}
+
+void routine() {
+  readSensors();
+  sendReadings();
 }
 
 void readSensors() {
