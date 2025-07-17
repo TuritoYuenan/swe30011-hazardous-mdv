@@ -1,4 +1,9 @@
 defmodule Service.SerialConnection do
+  @moduledoc """
+  A GenServer for managing a serial connection using Circuits.UART.
+  This module handles the initialization of the serial port, writing data to it,
+  and receiving data from it. It uses the Circuits.UART library for UART communication.
+  """
   use GenServer
   require Logger
   alias Circuits.UART

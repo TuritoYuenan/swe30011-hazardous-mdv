@@ -1,4 +1,8 @@
 defmodule HazardousMDV.Application do
+  @moduledoc """
+  Application module for HazardousMDV, responsible for starting the
+  necessary services and supervising them.
+  """
   use Application
   require Logger
 

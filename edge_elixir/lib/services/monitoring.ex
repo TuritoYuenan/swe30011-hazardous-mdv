@@ -6,7 +6,7 @@ defmodule Service.Monitoring do
   use GenServer
   require Logger
 
-  @intervalSeconds 4
+  @interval_seconds 4
 
   # MARK: Client API
 
@@ -65,7 +65,7 @@ defmodule Service.Monitoring do
 
   @spec schedule_work() :: :ok
   defp schedule_work() do
-    Process.send_after(self(), :work, :timer.seconds(@intervalSeconds))
+    Process.send_after(self(), :work, :timer.seconds(@interval_seconds))
   end
 
   @doc readings: "list of maps, each %{lpg: float, ch4: float, co: float, temp: float}"
