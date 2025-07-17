@@ -28,6 +28,7 @@ defmodule HazardousMDV.MixProject do
   defp deps do
     [
       # Main edge server
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:circuits_uart, "~> 1.5"},
       {:exqlite, "~> 0.27"}
     ]
