@@ -3,7 +3,7 @@ import time
 import csv
 
 parent_pid = int(input("Enter the parent PID (main.py): "))
-monitor_duration = 10 * 60 # 10 minutes
+max_records = 300  # Collect 300 records
 
 def get_process_and_children_usage(pid):
     try:
@@ -21,13 +21,10 @@ with open('elixir_monitor.csv', mode='w', newline='') as csvfile:
     writer = csv.writer(csvfile)
     writer.writerow(['timestamp', 'cpu_percent', 'ram_bytes', 'io_read_bytes', 'io_write_bytes'])
 
-    start_time = time.time()
+    record_count = 0
     last_io_read = last_io_write = None
     try:
-        while True:
-            if time.time() - start_time > monitor_duration:
-                print("10 minutes elapsed. Exiting process monitor.")
-                break
+        while record_count < max_records:
             cpu, mem, io_read, io_write = get_process_and_children_usage(parent_pid)
 
             read_bps = write_bps = 0
@@ -41,7 +38,9 @@ with open('elixir_monitor.csv', mode='w', newline='') as csvfile:
             print(f"[{now}] CPU {cpu:.2f}%, RAM {mem} bytes, IO Read {read_bps} bytes/s, IO Write {write_bps} bytes/s")
             writer.writerow([now, cpu, mem, read_bps, write_bps])
             csvfile.flush()
+            record_count += 1
             time.sleep(1)
+        print("Collected 300 records. Exiting process monitor.")
     except KeyboardInterrupt:
         print("Monitoring stopped by user.")
     except Exception as e:
