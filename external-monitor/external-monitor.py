@@ -19,7 +19,7 @@ def get_process_and_children_usage(pid):
 
 with open('elixir_monitor.csv', mode='w', newline='') as csvfile:
     writer = csv.writer(csvfile)
-    writer.writerow(['cpu_percent', 'ram_bytes'])
+    writer.writerow(['cpu_percent', 'ram_bytes', 'io_read_bytes', 'io_write_bytes'])
 
     start_time = time.time()
     try:
@@ -27,9 +27,9 @@ with open('elixir_monitor.csv', mode='w', newline='') as csvfile:
             if time.time() - start_time > monitor_duration:
                 print("10 minutes elapsed. Exiting process monitor.")
                 break
-            cpu, mem = get_process_and_children_usage(parent_pid)
-            print(f"CPU {cpu:.2f}%, RAM {mem} bytes")
-            writer.writerow([cpu, mem])
+            cpu, mem, io_read, io_write = get_process_and_children_usage(parent_pid)
+            print(f"CPU {cpu:.2f}%, RAM {mem} bytes, IO Read {io_read} bytes, IO Write {io_write} bytes")
+            writer.writerow([cpu, mem, io_read, io_write])
             csvfile.flush()
             time.sleep(1)
     except KeyboardInterrupt:
