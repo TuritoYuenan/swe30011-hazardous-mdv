@@ -19,17 +19,27 @@ def get_process_and_children_usage(pid):
 
 with open('elixir_monitor.csv', mode='w', newline='') as csvfile:
     writer = csv.writer(csvfile)
-    writer.writerow(['cpu_percent', 'ram_bytes', 'io_read_bytes', 'io_write_bytes'])
+    writer.writerow(['timestamp', 'cpu_percent', 'ram_bytes', 'io_read_bytes', 'io_write_bytes'])
 
     start_time = time.time()
+    last_io_read = last_io_write = None
     try:
         while True:
             if time.time() - start_time > monitor_duration:
                 print("10 minutes elapsed. Exiting process monitor.")
                 break
             cpu, mem, io_read, io_write = get_process_and_children_usage(parent_pid)
-            print(f"CPU {cpu:.2f}%, RAM {mem} bytes, IO Read {io_read} bytes, IO Write {io_write} bytes")
-            writer.writerow([cpu, mem, io_read, io_write])
+
+            read_bps = write_bps = 0
+            if last_io_read is not None and last_io_write is not None:
+                read_bps = io_read - last_io_read
+                write_bps = io_write - last_io_write
+
+            last_io_read, last_io_write = io_read, io_write
+            now = time.strftime("%H:%M:%S")
+
+            print(f"[{now}] CPU {cpu:.2f}%, RAM {mem} bytes, IO Read {read_bps} bytes/s, IO Write {write_bps} bytes/s")
+            writer.writerow([now, cpu, mem, read_bps, write_bps])
             csvfile.flush()
             time.sleep(1)
     except KeyboardInterrupt:
