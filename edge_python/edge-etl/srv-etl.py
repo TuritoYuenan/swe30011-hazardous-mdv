@@ -34,7 +34,7 @@ async def extract(session: aiohttp.ClientSession, stream_url: str):
 def transform(raw_data: bytes):
 	"""Transform serial line into JSON/dict."""
 	data_line = raw_data.decode('utf-8').strip()
-	json_data = dict(item.split(":") for item in data_line.split(","))
+	json_data = {item.split(":")[0]: item.split(":")[1] for item in data_line.split(",")}
 	return json_data
 
 
